@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">MLKitTextRecognition</string>
+    <string name="recognizedApp">Text Recognition</string>
+    <string name="fromGallery">Select Image From Gallery</string>
+    <string name="getImageFromGallery">Select From Gallery</string>
+    <string name="fromcamera">Take Image From Camera</string>
+    <string name="fromCameraDesctription">Take Image From Camera </string>
+    <string name="apikey">CgB6e3x9eAdnhWV7zSGg1TxJDXjQtcBGNDSL7fcFEQO5WUYV3mCOCT0IpkK9pTmXdZVGSxqeFbh4lBAvfU7K3c4m</string>
+    <string name="fromCameraPreviewStream">From Camera Stream Realtime</string>
+    <string name="fromCameraStreamDesctription">Read Text From Camera Stream</string>
+</resources>

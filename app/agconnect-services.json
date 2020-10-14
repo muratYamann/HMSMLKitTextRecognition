@@ -1,0 +1,12 @@
+{
+	"client":{
+		"cp_id":"890090000023106173",
+		"product_id":"736430079244666426",
+		"client_id":"473018825005073600",
+		"client_secret":"9A9FC68304896635ACB1DAEBA235BFE5A8847BE55024D9042EB2D6E6D8C73E0E",
+		"app_id":"103050417",
+		"package_name":"com.yaman.mlkittextrecognition",
+		"api_key":"CgB6e3x9eAdnhWV7zSGg1TxJDXjQtcBGNDSL7fcFEQO5WUYV3mCOCT0IpkK9pTmXdZVGSxqeFbh4lBAvfU7K3c4m"
+	},
+	"configuration_version":"1.0"
+}
