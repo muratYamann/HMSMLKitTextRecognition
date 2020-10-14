@@ -38,30 +38,13 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     private val TAG: String = MainActivity::class.java.getSimpleName()
-    private var mTextAnalyzer: MLTextAnalyzer? = null
     val REQUEST_TAKE_PHOTO = 2
     val REQUEST_CAMERA_STREAM = 3
     lateinit var currentPhotoPath: String
     private val PERMISSION_CODE = 1
     private val GET_IMAGE_REQUEST_CODE = 22
 
-    var mlsNeedToDetect = true
-    val STOP_PREVIEW = 1
-    val START_PREVIEW = 2
     var lensEngine: LensEngine? = null
-
-    @SuppressLint("HandlerLeak")
-    private inner class mHandler(private val mContext: Context) : Handler() {
-        override fun handleMessage(msg: Message) {
-            when (msg.what) {
-                START_PREVIEW -> mlsNeedToDetect = true
-                STOP_PREVIEW -> mlsNeedToDetect = false
-                else -> {
-                }
-            }
-        }
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -189,8 +172,6 @@ class MainActivity : AppCompatActivity() {
         } catch (e: IOException) {
             // Exception handling logic.
         }
-
-
     }
 
     private fun surfaceVisible() {
@@ -216,7 +197,6 @@ class MainActivity : AppCompatActivity() {
             this.activity = activity
             this.etResult = etResult
         }
-
 
         override fun transactResult(results: MLAnalyzer.Result<MLText.Block?>) {
             val items: SparseArray<MLText.Block?>? = results.analyseList
