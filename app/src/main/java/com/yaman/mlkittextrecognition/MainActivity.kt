@@ -61,8 +61,8 @@ class MainActivity : AppCompatActivity() {
          * Use onDevice Function
          */
         imgGetFromGalleryCard.setOnClickListener {
-            //   clearText()
-            //   surfaceGone()
+            clearText()
+            surfaceGone()
             getImage()
         }
 
@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
          * Use Text Recognition From Camera Stream
          */
         cameraStreamCard.setOnClickListener {
-            // clearText()
+            clearText()
             surfaceVisible()
             cameraStream()
         }
