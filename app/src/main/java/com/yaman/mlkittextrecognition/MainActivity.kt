@@ -1,9 +1,7 @@
 package com.yaman.mlkittextrecognition
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -11,8 +9,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.os.Handler
-import android.os.Message
 import android.provider.MediaStore
 import android.text.Editable
 import android.util.SparseArray
@@ -37,7 +33,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private val TAG: String = MainActivity::class.java.getSimpleName()
+    private val TAG: String = MainActivity::class.java.simpleName
     val REQUEST_TAKE_PHOTO = 2
     val REQUEST_CAMERA_STREAM = 3
     lateinit var currentPhotoPath: String
@@ -55,6 +51,7 @@ class MainActivity : AppCompatActivity() {
          * Use Cloud Function
          */
         imgTakeFromCameraCard.setOnClickListener {
+            clearText()
             surfaceGone()
             MLApplication.getInstance().apiKey = getString(R.string.apikey)
             dispatchTakePictureIntent()
@@ -64,7 +61,8 @@ class MainActivity : AppCompatActivity() {
          * Use onDevice Function
          */
         imgGetFromGalleryCard.setOnClickListener {
-            surfaceGone()
+            //   clearText()
+            //   surfaceGone()
             getImage()
         }
 
@@ -72,6 +70,7 @@ class MainActivity : AppCompatActivity() {
          * Use Text Recognition From Camera Stream
          */
         cameraStreamCard.setOnClickListener {
+            // clearText()
             surfaceVisible()
             cameraStream()
         }
@@ -138,29 +137,22 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
-        if (requestCode == REQUEST_CAMERA_STREAM) {
-            val resultData = intent.getStringExtra("result")
-            etResult.text = Editable.Factory.getInstance().newEditable(resultData.toString())
-        }
+
     }
 
 
     private fun performTextRecognitionOnCloud(bitmap: Bitmap) {
-        val result = RecognitionUtil.asyncAnalyzeTextCloud(bitmap)
-        clearText()
-        etResult.text = Editable.Factory.getInstance().newEditable(result.toString())
+        val result = RecognitionUtil.asyncAnalyzeTextCloud(bitmap, etResult)
     }
 
     private fun performTextRecognitionOnDevice(bitmap: Bitmap) {
-        val result = RecognitionUtil.asyncAnalyzeTextLocal(bitmap)
-        clearText()
-        etResult.text = Editable.Factory.getInstance().newEditable(result.toString())
+        val result = RecognitionUtil.asyncAnalyzeTextLocal(bitmap, etResult)
     }
 
 
     private fun cameraStream() {
         val analyzer = MLTextAnalyzer.Factory(this).create()
-        analyzer.setTransactor(OcrDetectorProcessor(this, etResult))
+        analyzer.setTransactor(OcrDetectorProcessor(etResult))
         lensEngine = LensEngine.Creator(applicationContext, analyzer)
             .setLensType(LensEngine.BACK_LENS)
             .applyDisplayDimension(1440, 1080)
@@ -170,7 +162,7 @@ class MainActivity : AppCompatActivity() {
         try {
             lensEngine!!.run(mSurfaceView.holder)
         } catch (e: IOException) {
-            // Exception handling logic.
+            //handle Exception
         }
     }
 
@@ -182,38 +174,6 @@ class MainActivity : AppCompatActivity() {
     private fun surfaceGone() {
         imageArea.visibility = View.VISIBLE
         surface.visibility = View.GONE
-    }
-
-    class OcrDetectorProcessor(
-        activity: MainActivity,
-        etResult: AppCompatEditText
-    ) :
-        MLAnalyzer.MLTransactor<MLText.Block?> {
-
-        var activity: MainActivity? = null
-        var etResult: AppCompatEditText? = null
-
-        init {
-            this.activity = activity
-            this.etResult = etResult
-        }
-
-        override fun transactResult(results: MLAnalyzer.Result<MLText.Block?>) {
-            val items: SparseArray<MLText.Block?>? = results.analyseList
-            var result = ""
-
-            for (i in 0 until items!!.size()) {
-                result = " \n $result ${items[i]?.stringValue}"
-            }
-
-            etResult?.text?.clear()
-            etResult?.text = Editable.Factory.getInstance().newEditable(result)
-        }
-
-        override fun destroy() {
-            // Callback method used to release resources when the detection ends.
-        }
-
     }
 
     private fun dispatchTakePictureIntent() {
@@ -298,6 +258,36 @@ class MainActivity : AppCompatActivity() {
         } catch (e: IOException) {
             e.printStackTrace()
         }
+    }
+
+
+    class OcrDetectorProcessor(
+        etResult: AppCompatEditText
+    ) :
+        MLAnalyzer.MLTransactor<MLText.Block?> {
+
+        private var etResult: AppCompatEditText? = null
+
+        init {
+            this.etResult = etResult
+        }
+
+        override fun transactResult(results: MLAnalyzer.Result<MLText.Block?>) {
+            val items: SparseArray<MLText.Block?>? = results.analyseList
+            var result = ""
+
+            for (i in 0 until items!!.size()) {
+                result = " \n $result ${items[i]?.stringValue}"
+            }
+
+            etResult?.text?.clear()
+            etResult?.text = Editable.Factory.getInstance().newEditable(result)
+        }
+
+        override fun destroy() {
+            // Callback method used to release resources when the detection ends.
+        }
+
     }
 
 
